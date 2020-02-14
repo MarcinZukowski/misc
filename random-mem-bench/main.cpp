@@ -11,21 +11,21 @@ static constexpr int64_t PER_ROUND = 1'000'000;
 
 class Bench : public ::benchmark::Fixture {
 public:
-  void SetUp(const ::benchmark::State& st)
+  void SetUp(const ::benchmark::State& st) override
   {
     // Allocate memory
     int64_t range = st.range(0);
     m_mem = reinterpret_cast<int64_t*>(malloc(range));
     m_count = range / sizeof(*m_mem);
 
-    // Fill with random integers
+    // Fill with random integers in the range
     srand(0);
     for (int64_t i = 0; i < m_count; ++i) {
       m_mem[i] = rand64() & (m_count - 1);
     }
   }
 
-  void TearDown(const ::benchmark::State&)
+  void TearDown(const ::benchmark::State&) override
   {
     free(m_mem);
   }
