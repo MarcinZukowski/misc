@@ -66,7 +66,7 @@ BENCHMARK_DEFINE_F(Bench, RandomWalk)(benchmark::State& state)
     }
     benchmark::DoNotOptimize(idx);
   }
-  state.SetItemsProcessed(state.iterations() * state.threads * PER_ROUND);
+  state.SetItemsProcessed(state.iterations() * PER_ROUND);
 }
 
 BENCHMARK_DEFINE_F(Bench, RandomSum)(benchmark::State& state)
@@ -79,7 +79,7 @@ BENCHMARK_DEFINE_F(Bench, RandomSum)(benchmark::State& state)
     }
     benchmark::DoNotOptimize(sum);
   }
-  state.SetItemsProcessed(state.iterations() * state.threads * PER_ROUND);
+  state.SetItemsProcessed(state.iterations() * PER_ROUND);
 }
 
 /**
