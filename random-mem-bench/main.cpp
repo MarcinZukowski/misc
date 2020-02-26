@@ -3,13 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 
-long rand64()
-{
-  return (static_cast<int64_t>(rand()) << 32) | rand();
-}
-
-/// Number of items per round
-static constexpr int64_t PER_ROUND = 1'000'000;
+#include "bench_mem.hpp"
 
 // Various options configurable via CLI
 static int64_t RANGE_LOG2_MIN = 4;
@@ -21,80 +15,6 @@ static int64_t USE_REAL_TIME = 0;
 
 // Are we in "--help" mode ?
 static bool IN_HELP = false;
-
-// Common setup
-class Bench : public ::benchmark::Fixture {
-public:
-  void SetUp(const ::benchmark::State& st) override
-  {
-    if (st.thread_index > 0) {
-      return;  // Only setup things in the 1st thread
-    }
-    // Allocate memory
-    int64_t range = st.range(0);
-    m_mem = reinterpret_cast<int64_t*>(malloc(range));
-    if (m_mem == nullptr) {
-      fprintf(stderr, "Couldn't allocate %lld bytes\n", range);
-      exit(1);
-    }
-    m_count = range / sizeof(*m_mem);
-    if (m_count <= 0) {
-      fprintf(stderr, "Range too small\n");
-      exit(1);
-    }
-
-    // Fill with random integers in the range
-    srand(0);
-    for (int64_t i = 0; i < m_count; ++i) {
-      m_mem[i] = rand64() & (m_count - 1);
-    }
-  }
-
-  void TearDown(const ::benchmark::State& st) override
-  {
-    if (st.thread_index > 0) {
-      return;   // Only tear down in the 1st thread
-    }
-    free(m_mem);
-  }
-
-  int64_t m_count;
-  int64_t *m_mem;
-};
-
-static int64_t getThreadOffset(int threadNum, int64_t range)
-{
-  // Some non-cyclic fraction of the range
-  int64_t idx = (range * threadNum * 13337 / 31337) % range;
-  return idx;
-}
-
-BENCHMARK_DEFINE_F(Bench, RandomWalk)(benchmark::State& state)
-{
-  for (auto _ : state) {
-    int64_t idx = 0;
-    int64_t offset = getThreadOffset(state.thread_index, m_count);
-    for (int i = 0; i < PER_ROUND; ++i) {
-      idx = (m_mem[idx] + i + offset) & (m_count - 1);
-    }
-    benchmark::DoNotOptimize(idx);
-  }
-  state.SetItemsProcessed(state.iterations() * PER_ROUND);
-}
-
-BENCHMARK_DEFINE_F(Bench, RandomSum)(benchmark::State& state)
-{
-  for (auto _ : state) {
-    int64_t sum = 0;
-    int64_t offset = getThreadOffset(state.thread_index, m_count);
-    for (int i = 0; i < PER_ROUND; ++i) {
-      int64_t idx = (m_mem[(i + offset) & (m_count - 1)]);
-      sum += m_mem[idx];
-    }
-    benchmark::DoNotOptimize(sum);
-  }
-  state.SetItemsProcessed(state.iterations() * PER_ROUND);
-}
 
 /**
  * Handle a single custom option.
