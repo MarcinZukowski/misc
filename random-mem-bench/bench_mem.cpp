@@ -5,7 +5,7 @@
 /// Number of items per round
 static constexpr int64_t PER_ROUND = 1'000'000;
 
-void Bench::SetUp(const ::benchmark::State& st)
+void BenchMem::SetUp(const ::benchmark::State& st)
 {
   if (st.thread_index > 0) {
     return;  // Only setup things in the 1st thread
@@ -30,7 +30,7 @@ void Bench::SetUp(const ::benchmark::State& st)
   }
 }
 
-void Bench::TearDown(const ::benchmark::State& st)
+void BenchMem::TearDown(const ::benchmark::State& st)
 {
   if (st.thread_index > 0) {
     return;   // Only tear down in the 1st thread
@@ -38,7 +38,7 @@ void Bench::TearDown(const ::benchmark::State& st)
   free(m_mem);
 }
 
-void Bench_RandomWalk_Benchmark::BenchmarkCase(benchmark::State& state)
+void BenchMem_RandomWalk_Benchmark::BenchmarkCase(benchmark::State& state)
 {
   for (auto _ : state) {
     int64_t idx = 0;
@@ -51,7 +51,7 @@ void Bench_RandomWalk_Benchmark::BenchmarkCase(benchmark::State& state)
   state.SetItemsProcessed(state.iterations() * PER_ROUND);
 }
 
-void Bench_RandomSum_Benchmark::BenchmarkCase(benchmark::State& state)
+void BenchMem_RandomSum_Benchmark::BenchmarkCase(benchmark::State& state)
 {
   for (auto _ : state) {
     int64_t sum = 0;

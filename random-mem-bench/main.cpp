@@ -104,8 +104,8 @@ void register_benchmarks()
 
   // Known benchmarks
   std::vector<benchmark::internal::Benchmark*> benchmarks{
-      new Bench_RandomSum_Benchmark(),
-      new Bench_RandomWalk_Benchmark(),
+      new BenchMem_RandomSum_Benchmark(),
+      new BenchMem_RandomWalk_Benchmark(),
   };
 
   for (auto &b: benchmarks) {

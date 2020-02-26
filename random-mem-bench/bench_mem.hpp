@@ -4,7 +4,7 @@
 
 #include "benchmark/benchmark.h"
 
-class Bench : public ::benchmark::Fixture {
+class BenchMem : public ::benchmark::Fixture {
 public:
   void SetUp(const ::benchmark::State& st) override;
   void TearDown(const ::benchmark::State& st) override;
@@ -13,7 +13,7 @@ public:
   int64_t *m_mem;
 };
 
-BENCHMARK_PRIVATE_DECLARE_F(Bench, RandomWalk);
-BENCHMARK_PRIVATE_DECLARE_F(Bench, RandomSum);
+BENCHMARK_PRIVATE_DECLARE_F(BenchMem, RandomWalk);
+BENCHMARK_PRIVATE_DECLARE_F(BenchMem, RandomSum);
 
 #endif //RANDOM_MEM_BENCH_BENCH_MEM_HPP
