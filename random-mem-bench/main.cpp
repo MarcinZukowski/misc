@@ -62,12 +62,20 @@ public:
   int64_t *m_mem;
 };
 
+static int64_t getThreadOffset(int threadNum, int64_t range)
+{
+  // Some non-cyclic fraction of the range
+  int64_t idx = (range * threadNum * 13337 / 31337) % range;
+  return idx;
+}
+
 BENCHMARK_DEFINE_F(Bench, RandomWalk)(benchmark::State& state)
 {
   for (auto _ : state) {
     int64_t idx = 0;
+    int64_t offset = getThreadOffset(state.thread_index, m_count);
     for (int i = 0; i < PER_ROUND; ++i) {
-      idx = (m_mem[idx] + i) & (m_count - 1);
+      idx = (m_mem[idx] + i + offset) & (m_count - 1);
     }
     benchmark::DoNotOptimize(idx);
   }
@@ -78,8 +86,9 @@ BENCHMARK_DEFINE_F(Bench, RandomSum)(benchmark::State& state)
 {
   for (auto _ : state) {
     int64_t sum = 0;
+    int64_t offset = getThreadOffset(state.thread_index, m_count);
     for (int i = 0; i < PER_ROUND; ++i) {
-      int64_t idx = (m_mem[i & (m_count - 1)]);
+      int64_t idx = (m_mem[(i + offset) & (m_count - 1)]);
       sum += m_mem[idx];
     }
     benchmark::DoNotOptimize(sum);
