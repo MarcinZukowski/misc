@@ -32,6 +32,10 @@ public:
     // Allocate memory
     int64_t range = st.range(0);
     m_mem = reinterpret_cast<int64_t*>(malloc(range));
+    if (m_mem == nullptr) {
+      fprintf(stderr, "Couldn't allocate %lld bytes\n", range);
+      exit(1);
+    }
     m_count = range / sizeof(*m_mem);
     if (m_count <= 0) {
       fprintf(stderr, "Range too small\n");
