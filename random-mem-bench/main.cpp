@@ -17,6 +17,7 @@ static int64_t RANGE_LOG2_MAX = 28;
 static int64_t RANGE_LOG2_STEP = 3;
 static int64_t THREADS_MIN = 1;
 static int64_t THREADS_MAX = 1;
+static int64_t USE_REAL_TIME = 0;
 
 // Are we in "--help" mode ?
 static bool IN_HELP = false;
@@ -124,6 +125,7 @@ std::vector<option> options {
     {"range_log2_step", &RANGE_LOG2_STEP},
     {"threads_min", &THREADS_MIN},
     {"threads_max", &THREADS_MAX},
+    {"use_real_time", &USE_REAL_TIME},
 };
 
 /**
@@ -183,6 +185,9 @@ void register_benchmarks()
     b = b->Range(1LL << RANGE_LOG2_MIN, 1LL << RANGE_LOG2_MAX);
     if (THREADS_MAX > 1) {
       b = b->ThreadRange(THREADS_MIN, THREADS_MAX);
+    }
+    if (USE_REAL_TIME) {
+      b = b->UseRealTime();
     }
   }
 }
