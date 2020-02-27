@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "bench_alloc.hpp"
 #include "bench_mem.hpp"
 
 // Various options configurable via CLI
@@ -106,6 +107,10 @@ void register_benchmarks()
   std::vector<benchmark::internal::Benchmark*> benchmarks{
       new BenchMem_RandomSum_Benchmark(),
       new BenchMem_RandomWalk_Benchmark(),
+      new BenchAlloc_Malloc_Benchmark(),
+      new BenchAlloc_MallocAndMemset_Benchmark(),
+      new BenchAlloc_RandomMalloc_Benchmark(),
+      new BenchAlloc_RandomMallocAndMemset_Benchmark(),
   };
 
   for (auto &b: benchmarks) {
